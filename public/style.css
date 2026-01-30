@@ -575,3 +575,27 @@ body {
     font-size: 0.9em;
     line-height: 1.5;
 }
+
+/* Trailer Button */
+.trailer-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #ff0844 0%, #ff6b6b 100%);
+    color: white;
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.95em;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 8, 68, 0.3);
+}
+
+.trailer-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 8, 68, 0.4);
+}
+
+.trailer-icon {
+    margin-right: 5px;
+}

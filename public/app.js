@@ -240,6 +240,12 @@ function createMovieCard(movie, stackIndex) {
                     <span class="cast-names">${movie.cast.join(', ')}</span>
                 </div>
             ` : ''}
+
+            ${movie.trailer ? `
+                <a href="${movie.trailer}" target="_blank" class="trailer-btn">
+                    <span class="trailer-icon">▶️</span> Watch Trailer
+                </a>
+            ` : ''}
             <p class="movie-overview">${movie.overview}</p>
         </div>
     `;

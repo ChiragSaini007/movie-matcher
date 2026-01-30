@@ -139,6 +139,30 @@ async function getCast(movieId) {
   }
 }
 
+// Get trailer from TMDB
+async function getTrailer(movieId) {
+  try {
+    const data = await makeRequest(
+      `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${TMDB_API_KEY}`
+    );
+    // Find official trailer from YouTube
+    const trailer = data.results?.find(video =>
+      video.site === 'YouTube' &&
+      (video.type === 'Trailer' || video.type === 'Teaser') &&
+      video.official === true
+    );
+    // If no official trailer, get any YouTube trailer
+    const anyTrailer = data.results?.find(video =>
+      video.site === 'YouTube' &&
+      (video.type === 'Trailer' || video.type === 'Teaser')
+    );
+    const finalTrailer = trailer || anyTrailer;
+    return finalTrailer ? `https://www.youtube.com/watch?v=${finalTrailer.key}` : null;
+  } catch (error) {
+    return null;
+  }
+}
+
 // Update user preferences based on their likes AND watched
 function updatePreferences(userId, movie, weight = 1) {
   const user = appData.users[userId];
@@ -256,6 +280,7 @@ async function handleAPI(pathname, query, body) {
         const omdbRatings = await getOMDBRatings(imdbId);
         const streaming = await getStreamingInfo(movie.id);
         const cast = await getCast(movie.id);
+        const trailer = await getTrailer(movie.id);
 
         return {
           id: movie.id,
@@ -268,7 +293,8 @@ async function handleAPI(pathname, query, body) {
           imdbRating: omdbRatings.imdbRating,
           rottenTomatoes: omdbRatings.rottenTomatoes,
           streaming,
-          cast
+          cast,
+          trailer
         };
       })
     );
