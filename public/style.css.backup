@@ -1,0 +1,536 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+#app {
+    width: 100%;
+    max-width: 500px;
+    position: relative;
+}
+
+.screen {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.screen.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Login Screen */
+#loginScreen .container {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+#loginScreen h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+#loginScreen p {
+    color: #666;
+    margin-bottom: 40px;
+    font-size: 1.1em;
+}
+
+.subtitle {
+    color: #666;
+    margin-bottom: 20px !important;
+    font-size: 1.1em;
+}
+
+.name-input {
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 1.1em;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    transition: border-color 0.3s;
+    font-family: inherit;
+}
+
+.name-input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.continue-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s;
+    margin-bottom: 15px;
+}
+
+.continue-btn:hover {
+    transform: translateY(-2px);
+}
+
+.continue-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.back-link {
+    background: transparent;
+    border: none;
+    color: #667eea;
+    font-size: 1em;
+    cursor: pointer;
+    padding: 10px;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: #764ba2;
+}
+
+.user-select {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.user-btn {
+    flex: 1;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 15px;
+    padding: 30px 20px;
+    color: white;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-btn:hover {
+    transform: translateY(-5px);
+}
+
+.user-icon {
+    font-size: 3em;
+}
+
+/* Header */
+.header {
+    background: white;
+    border-radius: 20px 20px 0 0;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-info {
+    font-weight: 600;
+    font-size: 1.1em;
+    color: #333;
+}
+
+.matches-btn {
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.matches-btn:hover {
+    transform: scale(1.05);
+}
+
+.back-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.1em;
+    cursor: pointer;
+    color: #333;
+    padding: 5px 10px;
+}
+
+/* Swipe Container */
+.swipe-container {
+    background: white;
+    height: 600px;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-stack {
+    height: 100%;
+    position: relative;
+    padding: 20px;
+}
+
+.movie-card {
+    position: absolute;
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    cursor: grab;
+    transition: transform 0.3s ease;
+    overflow: hidden;
+}
+
+.movie-card.swiping {
+    cursor: grabbing;
+    transition: none;
+}
+
+.movie-card.swipe-left {
+    animation: swipeLeft 0.3s forwards;
+}
+
+.movie-card.swipe-right {
+    animation: swipeRight 0.3s forwards;
+}
+
+@keyframes swipeLeft {
+    to {
+        transform: translateX(-150%) rotate(-30deg);
+        opacity: 0;
+    }
+}
+
+@keyframes swipeRight {
+    to {
+        transform: translateX(150%) rotate(30deg);
+        opacity: 0;
+    }
+}
+
+.movie-poster {
+    width: 100%;
+    height: 60%;
+    object-fit: cover;
+    background: #f0f0f0;
+}
+
+.movie-info {
+    padding: 20px;
+    height: 40%;
+    overflow-y: auto;
+}
+
+.movie-title {
+    font-size: 1.5em;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.movie-year {
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.ratings {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #f8f8f8;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 0.9em;
+}
+
+.rating-label {
+    color: #666;
+    font-weight: 500;
+}
+
+.rating-value {
+    color: #333;
+    font-weight: 700;
+}
+
+.streaming {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.streaming-badge {
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.85em;
+    font-weight: 600;
+    opacity: 0.3;
+}
+
+.streaming-badge.available {
+    opacity: 1;
+}
+
+.netflix { background: #E50914; color: white; }
+.amazon { background: #00A8E1; color: white; }
+.disney { background: #113CCF; color: white; }
+
+.movie-overview {
+    color: #666;
+    font-size: 0.95em;
+    line-height: 1.5;
+}
+
+/* Action Buttons */
+.action-buttons {
+    background: white;
+    border-radius: 0 0 20px 20px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.action-btn:hover {
+    transform: scale(1.1);
+}
+
+.action-btn:active {
+    transform: scale(0.95);
+}
+
+.dislike-btn {
+    background: #ff6b6b;
+}
+
+.watched-btn {
+    background: #4dabf7;
+}
+
+.like-btn {
+    background: #51cf66;
+}
+
+.btn-icon {
+    font-size: 2em;
+    color: white;
+}
+
+.btn-label {
+    font-size: 0.7em;
+    color: white;
+    margin-top: 5px;
+}
+
+/* No More Cards */
+.no-more-cards {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    padding: 40px;
+}
+
+.no-more-cards h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.no-more-cards p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.no-more-cards button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 12px 30px;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+/* Matches Screen */
+.matches-container {
+    background: white;
+    min-height: 600px;
+    border-radius: 0 0 20px 20px;
+    padding: 20px;
+}
+
+.matches-list {
+    display: grid;
+    gap: 15px;
+}
+
+.match-item {
+    display: flex;
+    background: #f8f8f8;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.match-poster {
+    width: 100px;
+    height: 150px;
+    object-fit: cover;
+}
+
+.match-info {
+    padding: 15px;
+    flex: 1;
+}
+
+.match-title {
+    font-size: 1.2em;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.match-details {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.empty-matches {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.empty-matches h3 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.empty-matches p {
+    color: #666;
+}
+
+/* Match Notification */
+.match-notification {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.match-notification.show {
+    display: flex;
+}
+
+.match-content {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    max-width: 400px;
+    animation: bounceIn 0.5s ease;
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.match-content h2 {
+    font-size: 2em;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.match-content p {
+    color: #666;
+    margin-bottom: 25px;
+    font-size: 1.1em;
+}
+
+.match-content button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 12px 40px;
+    font-size: 1.1em;
+    cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .user-select {
+        flex-direction: column;
+    }
+
+    .swipe-container {
+        height: 500px;
+    }
+
+    .action-btn {
+        width: 60px;
+        height: 60px;
+    }
+}

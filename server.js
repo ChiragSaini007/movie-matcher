@@ -108,39 +108,39 @@ async function getOMDBRatings(imdbId) {
   }
 }
 
-// Get streaming availability from TMDB
+// Get streaming availability from TMDB (India region)
 async function getStreamingInfo(movieId) {
   try {
     const data = await makeRequest(
       `https://api.themoviedb.org/3/movie/${movieId}/watch/providers?api_key=${TMDB_API_KEY}`
     );
-    const usProviders = data.results?.US?.flatrate || [];
+    const inProviders = data.results?.IN?.flatrate || [];
     return {
-      netflix: usProviders.some(p => p.provider_name.includes('Netflix')),
-      amazon: usProviders.some(p => p.provider_name.includes('Prime')),
-      disney: usProviders.some(p => p.provider_name.includes('Disney'))
+      netflix: inProviders.some(p => p.provider_name.includes('Netflix')),
+      amazon: inProviders.some(p => p.provider_name.includes('Prime')),
+      disney: inProviders.some(p => p.provider_name.includes('Disney') || p.provider_name.includes('Hotstar'))
     };
   } catch (error) {
     return { netflix: false, amazon: false, disney: false };
   }
 }
 
-// Update user preferences based on their likes
-function updatePreferences(userId, movie) {
+// Update user preferences based on their likes AND watched
+function updatePreferences(userId, movie, weight = 1) {
   const user = appData.users[userId];
 
-  // Track genre preferences
+  // Track genre preferences (watched movies get 0.5 weight, liked get 1.0)
   if (movie.genres) {
     movie.genres.forEach(genre => {
-      user.preferences.genres[genre] = (user.preferences.genres[genre] || 0) + 1;
+      user.preferences.genres[genre] = (user.preferences.genres[genre] || 0) + weight;
     });
   }
 
   // Track average rating preference
   if (movie.tmdbRating) {
-    const likedMovies = user.liked.length;
+    const totalMovies = user.liked.length + (user.watched.length * 0.5);
     user.preferences.avgRating =
-      (user.preferences.avgRating * (likedMovies - 1) + movie.tmdbRating) / likedMovies;
+      (user.preferences.avgRating * (totalMovies - weight) + movie.tmdbRating * weight) / totalMovies;
   }
 }
 
@@ -168,11 +168,23 @@ function scoreMovie(userId, movie) {
   return score;
 }
 
-// Get movies with smart recommendations
+// Get daily page number for novelty (changes every day)
+function getDailyPage() {
+  const today = new Date();
+  const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+  // Rotate through pages 1-10 based on day of year
+  return (dayOfYear % 10) + 1;
+}
+
+// Get movies with smart recommendations and daily rotation
 async function getMovies(page = 1) {
   try {
+    // Add daily offset for novelty
+    const dailyPage = getDailyPage();
+    const actualPage = ((page - 1) * 10 + dailyPage) % 500 + 1; // TMDB has ~500 pages
+
     const data = await makeRequest(
-      `https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_API_KEY}&page=${page}`
+      `https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_API_KEY}&page=${actualPage}`
     );
     return data.results || [];
   } catch (error) {
@@ -266,11 +278,12 @@ async function handleAPI(pathname, query, body) {
     // Add to appropriate list
     if (action === 'like' && !user.liked.includes(movieId)) {
       user.liked.push(movieId);
-      updatePreferences(userId, movieData);
+      updatePreferences(userId, movieData, 1.0); // Full weight for likes
     } else if (action === 'pass' && !user.passed.includes(movieId)) {
       user.passed.push(movieId);
     } else if (action === 'watched' && !user.watched.includes(movieId)) {
       user.watched.push(movieId);
+      updatePreferences(userId, movieData, 0.5); // Half weight for watched
     }
 
     // Check for match (only on likes)
@@ -293,9 +306,39 @@ async function handleAPI(pathname, query, body) {
     return { success: true, isMatch };
   }
 
-  // Get matches with full movie data
+  // Get matches with full movie data (filter expired ones)
   if (pathname === '/api/matches') {
-    return { success: true, matches: appData.matches };
+    const now = Date.now();
+    const MATCH_EXPIRY = 48 * 60 * 60 * 1000; // 48 hours in milliseconds
+
+    // Filter out expired matches
+    const activeMatches = appData.matches.filter(match => {
+      return (now - match.timestamp) < MATCH_EXPIRY;
+    });
+
+    // Update if any were removed
+    if (activeMatches.length !== appData.matches.length) {
+      appData.matches = activeMatches;
+      saveData();
+    }
+
+    return { success: true, matches: activeMatches };
+  }
+
+  // Poll for new matches (for real-time notifications)
+  if (pathname === '/api/poll-matches' && query.userId) {
+    const now = Date.now();
+    const MATCH_EXPIRY = 48 * 60 * 60 * 1000;
+    const lastCheck = parseInt(query.since) || (now - 5000); // Last 5 seconds
+
+    // Find new matches since last check
+    const newMatches = appData.matches.filter(match => {
+      const isNew = match.timestamp > lastCheck && match.timestamp <= now;
+      const notExpired = (now - match.timestamp) < MATCH_EXPIRY;
+      return isNew && notExpired;
+    });
+
+    return { success: true, newMatches, timestamp: now };
   }
 
   // Get movie details by ID
