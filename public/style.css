@@ -225,15 +225,23 @@ body {
 }
 
 @keyframes swipeLeft {
-    to {
-        transform: translateX(-150%) rotate(-30deg);
+    0% {
+        transform: translateX(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(-120vw) rotate(-35deg);
         opacity: 0;
     }
 }
 
 @keyframes swipeRight {
-    to {
-        transform: translateX(150%) rotate(30deg);
+    0% {
+        transform: translateX(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(120vw) rotate(35deg);
         opacity: 0;
     }
 }
@@ -311,6 +319,7 @@ body {
 .netflix { background: #E50914; color: white; }
 .amazon { background: #00A8E1; color: white; }
 .disney { background: #113CCF; color: white; }
+.rent { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; font-size: 0.9em; }
 
 .movie-overview {
     color: #666;
@@ -395,6 +404,12 @@ body {
     margin-bottom: 20px;
 }
 
+.no-more-cards .sub-text {
+    color: #999;
+    font-size: 0.9em;
+    margin-bottom: 30px;
+}
+
 .no-more-cards button {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -403,6 +418,11 @@ body {
     padding: 12px 30px;
     font-size: 1em;
     cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.no-more-cards button:hover {
+    transform: translateY(-2px);
 }
 
 /* Matches Screen */

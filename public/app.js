@@ -224,9 +224,13 @@ function createMovieCard(movie, stackIndex) {
             </div>
 
             <div class="streaming">
-                <span class="streaming-badge netflix ${movie.streaming.netflix ? 'available' : ''}">Netflix</span>
-                <span class="streaming-badge amazon ${movie.streaming.amazon ? 'available' : ''}">Prime</span>
-                <span class="streaming-badge disney ${movie.streaming.disney ? 'available' : ''}">Disney+</span>
+                ${movie.streaming.netflix || movie.streaming.amazon || movie.streaming.disney ? `
+                    <span class="streaming-badge netflix ${movie.streaming.netflix ? 'available' : ''}">Netflix</span>
+                    <span class="streaming-badge amazon ${movie.streaming.amazon ? 'available' : ''}">Prime</span>
+                    <span class="streaming-badge disney ${movie.streaming.disney ? 'available' : ''}">Disney+</span>
+                ` : `
+                    <span class="streaming-badge rent available">🎬 Rent to Watch</span>
+                `}
             </div>
 
             <p class="movie-overview">${movie.overview}</p>
