@@ -125,6 +125,20 @@ async function getStreamingInfo(movieId) {
   }
 }
 
+// Get cast information from TMDB
+async function getCast(movieId) {
+  try {
+    const data = await makeRequest(
+      `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${TMDB_API_KEY}`
+    );
+    // Get top 5 cast members
+    const cast = data.cast?.slice(0, 5).map(person => person.name) || [];
+    return cast;
+  } catch (error) {
+    return [];
+  }
+}
+
 // Update user preferences based on their likes AND watched
 function updatePreferences(userId, movie, weight = 1) {
   const user = appData.users[userId];
@@ -241,6 +255,7 @@ async function handleAPI(pathname, query, body) {
         const imdbId = await getIMDBId(movie.id);
         const omdbRatings = await getOMDBRatings(imdbId);
         const streaming = await getStreamingInfo(movie.id);
+        const cast = await getCast(movie.id);
 
         return {
           id: movie.id,
@@ -252,7 +267,8 @@ async function handleAPI(pathname, query, body) {
           tmdbRating: movie.vote_average,
           imdbRating: omdbRatings.imdbRating,
           rottenTomatoes: omdbRatings.rottenTomatoes,
-          streaming
+          streaming,
+          cast
         };
       })
     );

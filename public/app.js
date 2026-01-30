@@ -233,6 +233,13 @@ function createMovieCard(movie, stackIndex) {
                 `}
             </div>
 
+
+            ${movie.cast && movie.cast.length > 0 ? `
+                <div class="cast-info">
+                    <span class="cast-label">🎭 Cast:</span>
+                    <span class="cast-names">${movie.cast.join(', ')}</span>
+                </div>
+            ` : ''}
             <p class="movie-overview">${movie.overview}</p>
         </div>
     `;

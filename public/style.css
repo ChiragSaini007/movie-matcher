@@ -554,3 +554,24 @@ body {
         height: 60px;
     }
 }
+
+/* Cast Info */
+.cast-info {
+    background: #f8f9fa;
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border-left: 3px solid #667eea;
+}
+
+.cast-label {
+    font-weight: 700;
+    color: #333;
+    margin-right: 8px;
+}
+
+.cast-names {
+    color: #555;
+    font-size: 0.9em;
+    line-height: 1.5;
+}
