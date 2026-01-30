@@ -25,18 +25,45 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // Load saved names from server
+// Load saved names from server
 async function loadSavedNames() {
     try {
         const response1 = await fetch(`${API_BASE}/api/user?userId=user1`);
         const data1 = await response1.json();
-        if (data1.success && data1.user.name !== 'User 1') {
-            document.getElementById('user1Name').textContent = data1.user.name;
-        }
-
+        const user1HasName = data1.success && data1.user.name !== 'User 1';
+        
         const response2 = await fetch(`${API_BASE}/api/user?userId=user2`);
         const data2 = await response2.json();
-        if (data2.success && data2.user.name !== 'User 2') {
+        const user2HasName = data2.success && data2.user.name !== 'User 2';
+
+        // Update button labels
+        if (user1HasName) {
+            document.getElementById('user1Name').textContent = data1.user.name;
+        }
+        if (user2HasName) {
             document.getElementById('user2Name').textContent = data2.user.name;
+        }
+
+        // Show guiding message if one partner already joined
+        const loginContainer = document.querySelector('#loginScreen .container');
+        const existingMessage = document.getElementById('partnerJoinedMessage');
+        
+        if (existingMessage) {
+            existingMessage.remove();
+        }
+
+        if (user1HasName && !user2HasName) {
+            const message = document.createElement('p');
+            message.id = 'partnerJoinedMessage';
+            message.className = 'partner-joined-msg';
+            message.innerHTML = `💕 <strong>${data1.user.name}</strong> has joined! Click Partner 2 to continue ➡️`;
+            loginContainer.insertBefore(message, document.getElementById('userSelectSection'));
+        } else if (user2HasName && !user1HasName) {
+            const message = document.createElement('p');
+            message.id = 'partnerJoinedMessage';
+            message.className = 'partner-joined-msg';
+            message.innerHTML = `💕 <strong>${data2.user.name}</strong> has joined! Click Partner 1 to continue ➡️`;
+            loginContainer.insertBefore(message, document.getElementById('userSelectSection'));
         }
     } catch (error) {
         console.error('Error loading saved names:', error);

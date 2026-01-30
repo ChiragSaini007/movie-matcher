@@ -635,3 +635,24 @@ body {
     font-size: 0.8em;
     font-weight: 600;
 }
+
+/* Partner Joined Message */
+.partner-joined-msg {
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+    color: #333;
+    padding: 15px 20px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    font-size: 1em;
+    border: 2px solid #ff6b9d;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.partner-joined-msg strong {
+    color: #e91e63;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
