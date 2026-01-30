@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Matcher - Find Movies Together</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Login Screen -->
+        <div id="loginScreen" class="screen active">
+            <div class="container">
+                <h1>🎬 Movie Matcher</h1>
+                <p>Swipe together, watch together</p>
+
+                <!-- Name Input Screen -->
+                <div id="nameInputSection" style="display: none;">
+                    <p class="subtitle">Welcome! What's your name?</p>
+                    <input type="text" id="nameInput" class="name-input" placeholder="Enter your name" maxlength="20">
+                    <button class="continue-btn" onclick="saveName()">Continue</button>
+                    <button class="back-link" onclick="showUserSelect()">← Back</button>
+                </div>
+
+                <!-- User Selection Screen -->
+                <div id="userSelectSection" class="user-select">
+                    <button class="user-btn" onclick="showNameInput('user1')" id="user1Btn">
+                        <span class="user-icon">👤</span>
+                        <span id="user1Name">Partner 1</span>
+                    </button>
+                    <button class="user-btn" onclick="showNameInput('user2')" id="user2Btn">
+                        <span class="user-icon">💑</span>
+                        <span id="user2Name">Partner 2</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Swipe Screen -->
+        <div id="swipeScreen" class="screen">
+            <div class="header">
+                <div class="user-info">
+                    <span id="currentUserName">User</span>
+                </div>
+                <button class="matches-btn" onclick="showMatches()">
+                    ❤️ Matches (<span id="matchCount">0</span>)
+                </button>
+            </div>
+
+            <div class="swipe-container">
+                <div id="cardStack" class="card-stack">
+                    <!-- Movie cards will be inserted here -->
+                </div>
+
+                <div id="noMoreCards" class="no-more-cards" style="display: none;">
+                    <h2>No more movies!</h2>
+                    <p>Check back later for more recommendations</p>
+                    <button onclick="loadMovies()">Refresh</button>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn dislike-btn" onclick="swipePass()">
+                    <span class="btn-icon">✕</span>
+                    <span class="btn-label">Pass</span>
+                </button>
+                <button class="action-btn watched-btn" onclick="swipeWatched()">
+                    <span class="btn-icon">👁️</span>
+                    <span class="btn-label">Watched</span>
+                </button>
+                <button class="action-btn like-btn" onclick="swipeLike()">
+                    <span class="btn-icon">❤️</span>
+                    <span class="btn-label">Like</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Matches Screen -->
+        <div id="matchesScreen" class="screen">
+            <div class="header">
+                <button class="back-btn" onclick="showSwipe()">← Back</button>
+                <h2>Your Matches</h2>
+            </div>
+            <div class="matches-container">
+                <div id="matchesList" class="matches-list">
+                    <!-- Matches will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Match Notification -->
+        <div id="matchNotification" class="match-notification">
+            <div class="match-content">
+                <h2>🎉 It's a Match!</h2>
+                <p>You both want to watch this movie!</p>
+                <button onclick="hideMatchNotification()">Awesome!</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
