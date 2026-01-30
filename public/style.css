@@ -186,11 +186,13 @@ body {
 }
 
 /* Swipe Container */
+/* Fix card visibility - remove overflow hidden from container */
 .swipe-container {
     background: white;
-    height: 600px;
+    height: 650px;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
+    padding: 10px 0;
 }
 
 .card-stack {
@@ -209,6 +211,23 @@ body {
     cursor: grab;
     transition: transform 0.3s ease;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.movie-poster {
+    width: 100%;
+    height: 55%;
+    object-fit: cover;
+    background: #f0f0f0;
+    flex-shrink: 0;
+}
+
+.movie-info {
+    padding: 15px;
+    height: 45%;
+    overflow-y: auto;
+    flex-shrink: 0;
 }
 
 .movie-card.swiping {
@@ -598,4 +617,21 @@ body {
 
 .trailer-icon {
     margin-right: 5px;
+}
+
+/* Genre Tags */
+.genres {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.genre-tag {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: 600;
 }

@@ -202,6 +202,12 @@ function createMovieCard(movie, stackIndex) {
             <h3 class="movie-title">${movie.title}</h3>
             <div class="movie-year">${year}</div>
 
+            ${movie.genres && movie.genres.length > 0 ? `
+                <div class="genres">
+                    ${movie.genres.map(genre => `<span class="genre-tag">${genre}</span>`).join('')}
+                </div>
+            ` : ''}
+
             <div class="ratings">
                 ${movie.tmdbRating ? `
                     <div class="rating">

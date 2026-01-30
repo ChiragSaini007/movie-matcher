@@ -206,6 +206,20 @@ function scoreMovie(userId, movie) {
   return score;
 }
 
+// Genre ID to name mapping (TMDB standard genres)
+const GENRE_MAP = {
+  28: 'Action', 12: 'Adventure', 16: 'Animation', 35: 'Comedy', 80: 'Crime',
+  99: 'Documentary', 18: 'Drama', 10751: 'Family', 14: 'Fantasy', 36: 'History',
+  27: 'Horror', 10402: 'Music', 9648: 'Mystery', 10749: 'Romance', 878: 'Sci-Fi',
+  10770: 'TV Movie', 53: 'Thriller', 10752: 'War', 37: 'Western'
+};
+
+// Get genre names from IDs
+function getGenreNames(genreIds) {
+  if (!genreIds || !Array.isArray(genreIds)) return [];
+  return genreIds.map(id => GENRE_MAP[id]).filter(Boolean).slice(0, 3); // Max 3 genres
+}
+
 // Get daily page number for novelty (changes every day)
 function getDailyPage() {
   const today = new Date();
@@ -288,7 +302,8 @@ async function handleAPI(pathname, query, body) {
           poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
           overview: movie.overview,
           releaseDate: movie.release_date,
-          genres: movie.genre_ids || [],
+          genres: getGenreNames(movie.genre_ids),
+          genreIds: movie.genre_ids || [],
           tmdbRating: movie.vote_average,
           imdbRating: omdbRatings.imdbRating,
           rottenTomatoes: omdbRatings.rottenTomatoes,
